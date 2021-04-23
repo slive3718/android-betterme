@@ -98,7 +98,6 @@
             android:layout_marginTop="8dp"
             android:ellipsize="end"
             android:gravity="center"
-            android:maxLines="5"
             android:text="Diet Content"
             android:textColor="@color/white" />
     </LinearLayout>
