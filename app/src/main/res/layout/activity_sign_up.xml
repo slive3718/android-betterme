@@ -6,14 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".SignUp">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:src="@drawable/img_login"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.1" />
+
     <LinearLayout
         android:id="@+id/linearLayout2"
-
         android:layout_width="330dp"
         android:layout_height="300dp"
         android:orientation="vertical"
-
-
         android:padding="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,7 +41,8 @@
             android:ems="10"
             android:hint="@string/hint_username"
             android:inputType="textPersonName"
-            android:text="" />
+            android:text=""
+            app:backgroundTint="@color/colorPrimary" />
 
         <EditText
             android:id="@+id/editTextPassword"
@@ -43,7 +53,8 @@
             android:ems="10"
             android:hint="@string/hint_password"
             android:inputType="textPassword"
-            android:text="" />
+            android:text=""
+            app:backgroundTint="@color/colorPrimary" />
 
         <EditText
             android:id="@+id/editTextConfirmPassword"
@@ -54,7 +65,8 @@
             android:ems="10"
             android:hint="@string/hint_confirmpass"
             android:inputType="textPassword"
-            android:text="" />
+            android:text=""
+            app:backgroundTint="@color/colorPrimary" />
 
         <EditText
             android:id="@+id/editTextEmail"
@@ -64,7 +76,8 @@
             android:ems="10"
             android:hint="@string/hint_email"
             android:inputType="textEmailAddress"
-            android:text="" />
+            android:text=""
+            app:backgroundTint="@color/colorPrimary" />
 
         <Button
             android:id="@+id/btnSignUp"
