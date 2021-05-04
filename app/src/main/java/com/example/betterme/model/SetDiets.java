@@ -1,5 +1,7 @@
 package com.example.betterme.model;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,9 +29,11 @@ public class SetDiets implements Serializable {
     private String archive;
     private String target_audience;
     private String like_id;
-    private String like_status;
+    private String like_status = "0";
     private int getLikeCount;
     private int getCommentCount;
+    private String getPostRating = "";
+    private double getRatePercent;
     private UserInfo userInfo;
     private List<SetImages> images = new ArrayList<>();
     private List<SetComment> comments = new ArrayList<>();
@@ -57,8 +61,14 @@ public class SetDiets implements Serializable {
         like_id = jsonObject.optString("like_id");
         getLikeCount = jsonObject.optInt("getLikeCount",0);
         getCommentCount = jsonObject.optInt("getCommentCount",0);
+        getPostRating = jsonObject.optString("getPostRating");
+        getRatePercent = jsonObject.optDouble("getRatePercent",0.0);
         userInfo = new UserInfo(jsonObject);
-        like_status = jsonObject.optJSONObject("like_status").optString("like_status");
+        if(jsonObject.has("like_status")) {
+            JSONObject js = jsonObject.optJSONObject("like_status");
+            if(js != null && js.has("like_status"))
+                like_status = js.optString("like_status");
+        }
         if (jsonObject.has("images")) {
             try {
                 JSONArray jsonArray = jsonObject.getJSONArray("images");
@@ -263,5 +273,21 @@ public class SetDiets implements Serializable {
 
     public void setComments(List<SetComment> comments) {
         this.comments = comments;
+    }
+
+    public String getGetPostRating() {
+        return getPostRating;
+    }
+
+    public void setGetPostRating(String getPostRating) {
+        this.getPostRating = getPostRating;
+    }
+
+    public double getGetRatePercent() {
+        return getRatePercent;
+    }
+
+    public void setGetRatePercent(double getRatePercent) {
+        this.getRatePercent = getRatePercent;
     }
 }
