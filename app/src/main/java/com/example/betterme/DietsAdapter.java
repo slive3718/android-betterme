@@ -59,9 +59,9 @@ public class DietsAdapter extends RecyclerView.Adapter<DietsAdapter.ViewHolder> 
     public class ViewHolder extends RecyclerView.ViewHolder {
         SetDiets diets = null;
         RecyclerView recyclerView;
-        TextView tvTitle, tvContent, tvKey, tvValue, tvName, tvDate, tvLike, tvComment;
+        TextView tvTitle, tvContent, tvKey, tvValue, tvName, tvDate, tvLike, tvComment, tvRate;
         ImageView avatar;
-        View containerLike, containerComment;
+        View containerLike, containerComment, containerRate;
         ImagesAdapter imagesAdapter;
 
         public ViewHolder(@NonNull View itemView) {
@@ -74,9 +74,11 @@ public class DietsAdapter extends RecyclerView.Adapter<DietsAdapter.ViewHolder> 
             tvDate = itemView.findViewById(R.id.tvDate);
             tvLike = itemView.findViewById(R.id.tvLike);
             tvComment = itemView.findViewById(R.id.tvComment);
+            tvRate = itemView.findViewById(R.id.tvRate);
             avatar = itemView.findViewById(R.id.ivAvatar);
             containerLike = itemView.findViewById(R.id.containerLike);
             containerComment = itemView.findViewById(R.id.containerComment);
+            containerRate = itemView.findViewById(R.id.containerRate);
             recyclerView = itemView.findViewById(R.id.recyclerView);
             imagesAdapter = new ImagesAdapter(context, new ArrayList<>());
             recyclerView.setAdapter(imagesAdapter);
@@ -98,6 +100,14 @@ public class DietsAdapter extends RecyclerView.Adapter<DietsAdapter.ViewHolder> 
                     }
                 }
             });
+            containerRate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onClickListener != null) {
+                        onClickListener.onClickRate(ViewHolder.this);
+                    }
+                }
+            });
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -106,6 +116,7 @@ public class DietsAdapter extends RecyclerView.Adapter<DietsAdapter.ViewHolder> 
                     }
                 }
             });
+
         }
 
         public SetDiets getDiets() {
@@ -119,15 +130,25 @@ public class DietsAdapter extends RecyclerView.Adapter<DietsAdapter.ViewHolder> 
             tvTitle.setText(item.getTitle());
             tvContent.setText(item.getContent());
             tvLike.setText("Like " + (item.getGetLikeCount() > 0 ? item.getGetLikeCount() : ""));
-            tvComment.setText("Comments " + (item.getComments().size() > 0 ? item.getComments().size() : ""));//TODO: set actual Like Count
+            tvComment.setText("Comments " + (item.getComments().size() > 0 ? item.getComments().size() : ""));
+            tvRate.setText(item.getGetRatePercent() + " out of 5");
 
-            if(item.getLike_status().equalsIgnoreCase("0")){
+            if (item.getLike_status().equalsIgnoreCase("0")) {
                 tvLike.setTextColor(context.getResources().getColor(R.color.black));
-                tvLike.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_like),null,null,null);
-            }else{
+                tvLike.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_like), null, null, null);
+            } else {
                 tvLike.setTextColor(context.getResources().getColor(R.color.blue));
-                tvLike.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_like_blue),null,null,null);
+                tvLike.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_like_blue), null, null, null);
             }
+
+            if (TextUtils.isEmpty(item.getGetPostRating())) {
+                containerRate.setEnabled(true);
+                tvRate.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.baseline_star_border_black_24), null, null, null);
+            } else {
+                containerRate.setEnabled(false);
+                tvRate.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.baseline_star_rate_black_24), null, null, null);
+            }
+
 
             String key = "";
             String value = "";
@@ -170,5 +191,7 @@ public class DietsAdapter extends RecyclerView.Adapter<DietsAdapter.ViewHolder> 
         void onClickLike(ViewHolder viewHolder);
 
         void onClickHolder(ViewHolder viewHolder);
+
+        void onClickRate(ViewHolder viewHolder);
     }
 }
