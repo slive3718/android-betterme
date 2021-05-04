@@ -1,9 +1,11 @@
 package com.example.betterme;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,9 +14,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatRatingBar;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
@@ -81,6 +84,11 @@ public class Homepage extends AppCompatActivity implements SwipeRefreshLayout.On
             @Override
             public void onClickHolder(DietsAdapter.ViewHolder viewHolder) {
                 DietActivity(viewHolder.diets);
+            }
+
+            @Override
+            public void onClickRate(DietsAdapter.ViewHolder viewHolder) {
+                showRateDialog(viewHolder.diets,viewHolder.getLayoutPosition());
             }
         });
         recyclerView.setAdapter(dietsAdapter);
@@ -285,5 +293,66 @@ public class Homepage extends AppCompatActivity implements SwipeRefreshLayout.On
     public void onRefresh() {
         refreshLayout.setRefreshing(true);
         extractDiets();
+    }
+
+    public void showRateDialog(SetDiets diets,int position){
+        LayoutInflater factory = LayoutInflater.from(this);
+        final View rateDialogView = factory.inflate(R.layout.dialog_rate_layout, null);
+        AppCompatRatingBar ratingBar =  rateDialogView.findViewById(R.id.simpleRatingBar);
+        final AlertDialog ratedialog = new AlertDialog.Builder(this)
+                .setTitle("Rate")
+                .setMessage(diets.getTitle())
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        rateDietRequest(diets,position, (int) ratingBar.getRating());
+                    }
+                })
+                .setNegativeButton("CANCEL", null)
+                .create();
+        ratedialog.setView(rateDialogView);
+        ratedialog.show();
+    }
+
+    private void rateDietRequest(SetDiets diet,int position,int rate){
+        String URL = APIContants.RATE_DIET;
+        RequestQueue queue = Volley.newRequestQueue(this);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (response != null && response.contains("id")) {
+                    diets.get(position).setGetPostRating(""+rate);
+                    dietsAdapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Somethingwent wrong", Toast.LENGTH_LONG).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                Log.d("tag", "onErrorResponse:" + error.getMessage());
+                refreshLayout.setRefreshing(false);
+            }
+        }) {
+
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("userID", AppApplication.getInstance().getCurrentUser().getId());
+                params.put("post_id", diet.getId());
+                params.put("rate", "" + rate);
+                Log.e("tag", "Params:" + params.toString());
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+        queue.add(stringRequest);
     }
 }

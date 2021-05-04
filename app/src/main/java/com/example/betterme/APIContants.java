@@ -14,6 +14,7 @@ public class APIContants {
     public static final String DELETE_DIET_COMMENT = BASE_URL + "deleteDietsComment.php";
     public static final String LIKE_DIET = BASE_URL + "like_diet.php";
     public static final String UNLIKE_DIET = BASE_URL + "unlike_diet.php";
+    public static final String RATE_DIET = BASE_URL + "rate_diet.php";
 
     public static final String POST_COMMUNITY = BASE_URL + "post_community.php";
     public static final String POST_COMMUNITY_COMMENT = BASE_URL + "addCommunityComments.php";
